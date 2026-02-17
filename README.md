@@ -197,18 +197,14 @@ Git: для клонирования репозитория
 bash
 
 # Клонирование репозитория
-
 git clone https://github.com/Vyborova/diplomguru.git
 cd diplomguru
 
 # Установка зависимостей
-
 npm install
 
 # Установка браузеров Playwright
-
 npx playwright install
 
 # Запуск тестов
-
 npm test
