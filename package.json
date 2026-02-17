@@ -7,7 +7,10 @@
     "test": "npx playwright test",
     "report": "npx playwright show-report",
     "codegen": "npx playwright codegen",
-    "ui": "npx playwright test --ui"
+    "ui": "npx playwright test --ui",
+    "allure:generate": "allure generate allure-results --clean",
+    "allure:open": "allure open allure-results",
+    "allure:serve": "allure serve allure-results"
   },
   "keywords": [],
   "author": "",

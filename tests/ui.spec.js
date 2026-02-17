@@ -1,28 +1,9 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../src/fixture/ui.fixture.js";
 import { faker } from "@faker-js/faker";
-import { MainPage } from "../src/pages/main.page";
-import { ArticleFormPage } from "../src/pages/articleForm.page";
-import { ArticleViewPage } from "../src/pages/articleView.page";
-import { ProfilePage } from "../src/pages/profile.page";
-import { UserBuilder } from "../src/builders/user.builder.js";
 import { ArticleBuilder } from "../src/builders/article.builder.js";
 
 test.describe("UI: статьи", () => {
-  const url = "https://realworld.qa.guru/#/";
-  let user;
-
-  test.beforeEach(async ({ page }) => {
-    user = UserBuilder.real().build(); // Используем UserBuilder
-    const mainPage = new MainPage(page);
-    await mainPage.open(url);
-    await mainPage.login(user.email, user.password);
-  });
-
-  test("Пользователь может создать новую статью", async ({ page }) => {
-    const articleFormPage = new ArticleFormPage(page);
-    const articleViewPage = new ArticleViewPage(page);
-
-    // Используем ArticleBuilder
+  test("Пользователь может создать новую статью", async ({ authApp }) => {
     const article = new ArticleBuilder()
       .withTitle(faker.lorem.sentence())
       .withDescription(faker.lorem.paragraph())
@@ -30,26 +11,21 @@ test.describe("UI: статьи", () => {
       .withTags([faker.lorem.word()])
       .build();
 
-    await articleFormPage.gotoNewArticle();
-    await articleFormPage.createAndPublishArticle(
+    await authApp.createArticle(
       article.title,
       article.description,
       article.body,
       article.tags,
     );
 
-    await expect(page.getByText(article.title)).toBeVisible();
-    await articleViewPage.addComment("Test comment");
-    await expect(articleViewPage.commentByText("Test comment")).toBeVisible();
+    await expect(authApp.page.getByText(article.title)).toBeVisible();
+    await authApp.addCommentToArticle("Test comment");
+    await expect(authApp.commentByText("Test comment")).toBeVisible();
   });
 
   test("Проверяем отображение созданной статьи в Global Feed", async ({
-    page,
+    authApp,
   }) => {
-    const mainPage = new MainPage(page);
-    const articleFormPage = new ArticleFormPage(page);
-
-    // Используем ArticleBuilder
     const article = new ArticleBuilder()
       .withTitle(faker.lorem.sentence())
       .withDescription(faker.lorem.paragraph())
@@ -57,26 +33,23 @@ test.describe("UI: статьи", () => {
       .withTags([faker.lorem.word()])
       .build();
 
-    await articleFormPage.gotoNewArticle();
-    await articleFormPage.createAndPublishArticle(
+    await authApp.createArticle(
       article.title,
       article.description,
       article.body,
       article.tags,
     );
 
-    await mainPage.openMainPage();
-    await mainPage.openGlobalFeed();
+    await authApp.openMainPage();
+    await authApp.openGlobalFeed();
 
-    await expect(page.getByText(article.title)).toBeVisible();
-    await expect(mainPage.authorLink(user.name)).toBeVisible();
+    await expect(authApp.page.getByText(article.title)).toBeVisible();
+    await expect(authApp.authorLink("Fusion")).toBeVisible();
   });
 
-  test("Пользователь может добавить комментарий к статье", async ({ page }) => {
-    const articleFormPage = new ArticleFormPage(page);
-    const articleViewPage = new ArticleViewPage(page);
-
-    // Используем ArticleBuilder
+  test("Пользователь может добавить комментарий к статье", async ({
+    authApp,
+  }) => {
     const article = new ArticleBuilder()
       .withTitle(faker.lorem.sentence())
       .withDescription(faker.lorem.paragraph())
@@ -86,23 +59,18 @@ test.describe("UI: статьи", () => {
 
     const comment = faker.lorem.sentence();
 
-    await articleFormPage.gotoNewArticle();
-    await articleFormPage.createAndPublishArticle(
+    await authApp.createArticle(
       article.title,
       article.description,
       article.body,
       article.tags,
     );
 
-    await articleViewPage.addComment(comment);
-    await expect(articleViewPage.commentByText(comment)).toBeVisible();
+    await authApp.addCommentToArticle(comment);
+    await expect(authApp.commentByText(comment)).toBeVisible();
   });
 
-  test("Пользователь может отредактировать статью", async ({ page }) => {
-    const articleFormPage = new ArticleFormPage(page);
-    const articleViewPage = new ArticleViewPage(page);
-
-    // Используем ArticleBuilder для оригинальной статьи
+  test("Пользователь может отредактировать статью", async ({ authApp }) => {
     const article = new ArticleBuilder()
       .withTitle(faker.lorem.sentence())
       .withDescription(faker.lorem.paragraph())
@@ -110,44 +78,37 @@ test.describe("UI: статьи", () => {
       .withTags([faker.lorem.word()])
       .build();
 
-    await articleFormPage.gotoNewArticle();
-    await articleFormPage.createAndPublishArticle(
+    await authApp.createArticle(
       article.title,
       article.description,
       article.body,
       article.tags,
     );
 
-    await expect(page.getByText(article.title)).toBeVisible();
+    await expect(authApp.page.getByText(article.title)).toBeVisible();
 
-    await articleViewPage.gotoEditArticle();
+    await authApp.editArticle();
 
-    // Используем ArticleBuilder для обновленной статьи
     const updatedArticle = new ArticleBuilder()
-      .withTitle(article.title) // Сохраняем тот же заголовок
+      .withTitle(article.title)
       .withDescription(faker.lorem.paragraph())
       .withBody(faker.lorem.paragraphs(2))
-      .withTags(article.tags) // Сохраняем те же теги
+      .withTags(article.tags)
       .build();
 
-    await articleFormPage.createAndPublishArticle(
+    await authApp.createArticle(
       updatedArticle.title,
       updatedArticle.description,
       updatedArticle.body,
       updatedArticle.tags,
     );
 
-    await expect(page.getByText(updatedArticle.body)).toBeVisible();
+    await expect(authApp.page.getByText(updatedArticle.body)).toBeVisible();
   });
 
   test("Пользователь может добавить статью в Favorited Articles", async ({
-    page,
+    authApp,
   }) => {
-    const articleFormPage = new ArticleFormPage(page);
-    const articleViewPage = new ArticleViewPage(page);
-    const profilePage = new ProfilePage(page);
-
-    // Используем ArticleBuilder
     const article = new ArticleBuilder()
       .withTitle(faker.lorem.sentence())
       .withDescription(faker.lorem.paragraph())
@@ -155,24 +116,23 @@ test.describe("UI: статьи", () => {
       .withTags([faker.lorem.word()])
       .build();
 
-    await articleFormPage.gotoNewArticle();
-    await articleFormPage.createAndPublishArticle(
+    await authApp.createArticle(
       article.title,
       article.description,
       article.body,
       article.tags,
     );
 
-    await expect(articleViewPage.favoriteButton).toBeVisible({
+    await expect(authApp.favoriteButton).toBeVisible({
       timeout: 10000,
     });
-    await articleViewPage.favoriteArticle();
+    await authApp.favoriteArticle();
 
-    await page.goto(
-      `https://realworld.qa.guru/#/profile/${user.name}/favorites`,
-    ); // Используем user.name
-    await profilePage.gotoFavoritedArticles();
+    await authApp.page.goto(
+      `https://realworld.qa.guru/#/profile/Fusion/favorites`,
+    );
+    await authApp.gotoFavoritedArticles();
 
-    await expect(page.getByText(article.title)).toBeVisible();
+    await expect(authApp.page.getByText(article.title)).toBeVisible();
   });
 });

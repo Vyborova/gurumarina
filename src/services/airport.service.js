@@ -4,7 +4,6 @@ export class AirportService {
     this.baseUrl = "https://airportgap.com/api";
   }
 
-  // Аутентификация
   async getAuthToken(email, password) {
     const response = await this.request.post(`${this.baseUrl}/tokens`, {
       data: { email, password },
@@ -13,7 +12,6 @@ export class AirportService {
     return data.token;
   }
 
-  // Аэропорты
   async getAirports() {
     const response = await this.request.get(`${this.baseUrl}/airports`);
     return response.json();
@@ -34,7 +32,6 @@ export class AirportService {
     return response.json();
   }
 
-  // Избранные
   async getFavorites(token) {
     const response = await this.request.get(`${this.baseUrl}/favorites`, {
       headers: { Authorization: `Bearer ${token}` },
