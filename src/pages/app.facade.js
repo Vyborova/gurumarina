@@ -14,7 +14,7 @@ export class AppFacade {
     this.profilePage = new ProfilePage(page);
   }
 
-  async open(url = "https://realworld.qa.guru/#/") {
+  async open(url = "/") {
     await this.mainPage.open(url);
   }
 

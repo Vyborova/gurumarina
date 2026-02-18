@@ -35,7 +35,7 @@ export class MainPage {
   }
 
   async openMainPage() {
-    await this.page.goto("https://realworld.qa.guru/#/");
+    await this.page.goto("/");
   }
 
   async openGlobalFeed() {
