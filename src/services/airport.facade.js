@@ -8,20 +8,13 @@ export class AirportFacade {
   }
 
   async addRandomFavoriteAirport() {
-    console.log("Добавляем аэропорт в избранное...");
-
     const { token } = await this.getAuthenticatedUser();
-    console.log("Токен получен:", token);
-
     const airportId = this.generator.generateAirportId();
     const note = this.generator.generateAirportNote();
-    console.log("Airport ID:", airportId, "Note:", note);
 
     const result = await this.service.addToFavorites(token, airportId, note);
-    console.log("Результат:", result);
 
     if (result.errors && result.errors[0]?.status === "422") {
-      console.log("Аэропорт уже в избранном - это нормально");
       return null;
     }
 
@@ -29,24 +22,30 @@ export class AirportFacade {
   }
 
   async getAuthenticatedUser() {
-    const user = this.generator.generateUser();
-    console.log("Пользователь:", user);
-
-    const token = await this.service.getAuthToken(user.email, user.password);
-    console.log("Токен:", token);
-
+    const token = process.env.API_TOKEN;
+    const user = {
+      email: process.env.API_EMAIL,
+      password: process.env.API_PASSWORD,
+    };
     return { user, token };
   }
 
   async getAirportById(airportId) {
-    return await this.service.getAirportById(airportId);
+    const { token } = await this.getAuthenticatedUser();
+    return await this.service.getAirportById(token, airportId);
   }
 
   async getDistance(from, to) {
-    return await this.service.getDistance(from, to);
+    const { token } = await this.getAuthenticatedUser();
+    return await this.service.getDistance(token, from, to);
   }
 
   async getAllAirports() {
-    return await this.service.getAirports();
+    const { token } = await this.getAuthenticatedUser();
+    return await this.service.getAirports(token);
+  }
+  async getFavoriteById(favoriteId) {
+    const { token } = await this.getAuthenticatedUser();
+    return await this.service.getFavoriteById(token, favoriteId);
   }
 }

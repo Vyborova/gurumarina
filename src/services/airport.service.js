@@ -1,56 +1,59 @@
 export class AirportService {
   constructor(request) {
     this.request = request;
-    this.baseUrl = "https://airportgap.com/api";
+
+    this.baseURL = process.env.API_BASE_URL || "https://airportgap.com/api";
   }
 
   async getAuthToken(email, password) {
-    const response = await this.request.post(`${this.baseUrl}/tokens`, {
+    const response = await this.request.post(`${this.baseURL}/tokens`, {
       data: { email, password },
     });
-    const data = await response.json();
-    return data.token;
-  }
-
-  async getAirports() {
-    const response = await this.request.get(`${this.baseUrl}/airports`);
     return response.json();
   }
 
-  async getAirportById(id) {
-    const response = await this.request.get(`${this.baseUrl}/airports/${id}`);
-    return response.json();
-  }
-
-  async getDistance(from, to) {
-    const response = await this.request.post(
-      `${this.baseUrl}/airports/distance`,
-      {
-        data: { from, to },
-      },
-    );
-    return response.json();
-  }
-
-  async getFavorites(token) {
-    const response = await this.request.get(`${this.baseUrl}/favorites`, {
+  async getAirports(token) {
+    const response = await this.request.get(`${this.baseURL}/airports`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     return response.json();
   }
 
-  async addToFavorites(token, airportId, note = "") {
-    const response = await this.request.post(`${this.baseUrl}/favorites`, {
+  async getAirportById(token, airportId) {
+    const response = await this.request.get(
+      `${this.baseURL}/airports/${airportId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
+    return response.json();
+  }
+
+  async getDistance(token, from, to) {
+    const response = await this.request.post(
+      `${this.baseURL}/airports/distance`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { from, to },
+      },
+    );
+    return response.json();
+  }
+  async addToFavorites(token, airportId, note) {
+    const response = await this.request.post(`${this.baseURL}/favorites`, {
       headers: { Authorization: `Bearer ${token}` },
       data: { airport_id: airportId, note },
     });
     return response.json();
   }
 
-  async getFavoriteById(token, id) {
-    const response = await this.request.get(`${this.baseUrl}/favorites/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  async getFavoriteById(token, favoriteId) {
+    const response = await this.request.get(
+      `${this.baseURL}/favorites/${favoriteId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    );
     return response.json();
   }
 }

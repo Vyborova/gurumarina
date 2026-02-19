@@ -1,4 +1,5 @@
 import { test as base } from "@playwright/test";
+import { AirportService } from "../services/airport.service.js";
 import { AirportFacade } from "../services/airport.facade.js";
 
 export const test = base.extend({

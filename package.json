@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "-": "^0.0.1",
-    "@faker-js/faker": "^10.1.0"
+    "@faker-js/faker": "^10.1.0",
+    "dotenv": "^17.3.1"
   }
 }
