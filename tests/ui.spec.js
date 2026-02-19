@@ -13,7 +13,7 @@ test.describe("UI: статьи", () => {
       article.tags,
     );
 
-    await expect(authApp.page.getByText(article.title)).toBeVisible();
+    await authApp.expectArticleTitleVisible(article.title);
     await authApp.addCommentToArticle("Test comment");
     await expect(authApp.commentByText("Test comment")).toBeVisible();
   });
@@ -33,7 +33,7 @@ test.describe("UI: статьи", () => {
     await authApp.openMainPage();
     await authApp.openGlobalFeed();
 
-    await expect(authApp.page.getByText(article.title)).toBeVisible();
+    await authApp.expectArticleTitleVisible(article.title);
     await expect(authApp.authorLink("Fusion")).toBeVisible();
   });
 
@@ -64,7 +64,7 @@ test.describe("UI: статьи", () => {
       article.tags,
     );
 
-    await expect(authApp.page.getByText(article.title)).toBeVisible();
+    await authApp.expectArticleTitleVisible(article.title);
 
     await authApp.editArticle();
 
@@ -82,7 +82,7 @@ test.describe("UI: статьи", () => {
       updatedArticle.tags,
     );
 
-    await expect(authApp.page.getByText(updatedArticle.body)).toBeVisible();
+    await authApp.expectArticleBodyVisible(updatedArticle.body);
   });
 
   test("Пользователь может добавить статью в Favorited Articles", async ({
@@ -107,6 +107,6 @@ test.describe("UI: статьи", () => {
     );
     await authApp.gotoFavoritedArticles();
 
-    await expect(authApp.page.getByText(article.title)).toBeVisible();
+    await authApp.expectArticleTitleVisible(article.title);
   });
 });

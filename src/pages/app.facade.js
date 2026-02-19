@@ -1,3 +1,4 @@
+import { expect } from "@playwright/test";
 import { MainPage } from "./main.page.js";
 import { ArticleFormPage } from "./articleForm.page.js";
 import { ArticleViewPage } from "./articleView.page.js";
@@ -72,5 +73,12 @@ export class AppFacade {
 
   get commentByText() {
     return this.articleViewPage.commentByText.bind(this.articleViewPage);
+  }
+  async expectArticleTitleVisible(title) {
+    await expect(this.page.getByText(title)).toBeVisible();
+  }
+
+  async expectArticleBodyVisible(body) {
+    await expect(this.page.getByText(body)).toBeVisible();
   }
 }

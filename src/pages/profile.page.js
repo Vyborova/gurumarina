@@ -1,9 +1,9 @@
 export class ProfilePage {
   constructor(page) {
     this.page = page;
-    this.favoritedArticlesLink = page.getByRole("link", {
-      name: "Favorited Articles",
-    });
+    this.favoritedArticlesLink = page.locator(
+      'a.nav-link:has-text("Favorited Articles")',
+    );
   }
 
   async gotoFavoritedArticles() {
