@@ -1,8 +1,4 @@
-import { expect } from "@playwright/test";
-import { MainPage } from "./main.page.js";
-import { ArticleFormPage } from "./articleForm.page.js";
-import { ArticleViewPage } from "./articleView.page.js";
-import { ProfilePage } from "./profile.page.js";
+import { MainPage, ArticleFormPage, ArticleViewPage, ProfilePage } from "./index.js";
 import { UserBuilder } from "../builders/user.builder.js";
 
 export class AppFacade {
@@ -73,12 +69,5 @@ export class AppFacade {
 
   get commentByText() {
     return this.articleViewPage.commentByText.bind(this.articleViewPage);
-  }
-  async expectArticleTitleVisible(title) {
-    await expect(this.page.getByText(title)).toBeVisible();
-  }
-
-  async expectArticleBodyVisible(body) {
-    await expect(this.page.getByText(body)).toBeVisible();
   }
 }

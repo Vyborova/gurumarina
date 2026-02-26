@@ -34,6 +34,7 @@ export class UserBuilder {
     return this;
   }
 
+  // Генерация случайного пользователя
   static random() {
     return new UserBuilder()
       .withEmail(faker.internet.email())
@@ -43,11 +44,12 @@ export class UserBuilder {
       .withImage(faker.image.avatar());
   }
 
+  // Генерация реального пользователя для тестов
   static real() {
     return new UserBuilder()
-      .withEmail(process.env.UI_EMAIL)
-      .withPassword(process.env.UI_PASSWORD)
-      .withName(process.env.UI_USERNAME);
+      .withEmail("test-20251@mail.ru")
+      .withPassword("Vybor2025")
+      .withName("Fusion");
   }
 
   build() {

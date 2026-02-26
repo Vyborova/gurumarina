@@ -1,10 +1,15 @@
 import { test, expect } from "../src/fixture/ui.fixture.js";
+import { faker } from "@faker-js/faker";
 import { ArticleBuilder } from "../src/builders/article.builder.js";
-import { CommentBuilder } from "../src/builders/comment.builder.js";
 
 test.describe("UI: статьи", () => {
   test("Пользователь может создать новую статью", async ({ authApp }) => {
-    const article = ArticleBuilder.random().build();
+    const article = new ArticleBuilder()
+      .withTitle(faker.lorem.sentence())
+      .withDescription(faker.lorem.paragraph())
+      .withBody(faker.lorem.paragraphs(2))
+      .withTags([faker.lorem.word()])
+      .build();
 
     await authApp.createArticle(
       article.title,
@@ -13,7 +18,7 @@ test.describe("UI: статьи", () => {
       article.tags,
     );
 
-    await authApp.expectArticleTitleVisible(article.title);
+    await expect(authApp.page.getByText(article.title)).toBeVisible();
     await authApp.addCommentToArticle("Test comment");
     await expect(authApp.commentByText("Test comment")).toBeVisible();
   });
@@ -21,7 +26,12 @@ test.describe("UI: статьи", () => {
   test("Проверяем отображение созданной статьи в Global Feed", async ({
     authApp,
   }) => {
-    const article = ArticleBuilder.random().build();
+    const article = new ArticleBuilder()
+      .withTitle(faker.lorem.sentence())
+      .withDescription(faker.lorem.paragraph())
+      .withBody(faker.lorem.paragraphs(2))
+      .withTags([faker.lorem.word()])
+      .build();
 
     await authApp.createArticle(
       article.title,
@@ -33,15 +43,21 @@ test.describe("UI: статьи", () => {
     await authApp.openMainPage();
     await authApp.openGlobalFeed();
 
-    await authApp.expectArticleTitleVisible(article.title);
+    await expect(authApp.page.getByText(article.title)).toBeVisible();
     await expect(authApp.authorLink("Fusion")).toBeVisible();
   });
 
   test("Пользователь может добавить комментарий к статье", async ({
     authApp,
   }) => {
-    const article = ArticleBuilder.random().build();
-    const comment = CommentBuilder.random().build();
+    const article = new ArticleBuilder()
+      .withTitle(faker.lorem.sentence())
+      .withDescription(faker.lorem.paragraph())
+      .withBody(faker.lorem.paragraphs(2))
+      .withTags([faker.lorem.word()])
+      .build();
+
+    const comment = faker.lorem.sentence();
 
     await authApp.createArticle(
       article.title,
@@ -50,12 +66,17 @@ test.describe("UI: статьи", () => {
       article.tags,
     );
 
-    await authApp.addCommentToArticle(comment.body);
-    await expect(authApp.commentByText(comment.body)).toBeVisible();
+    await authApp.addCommentToArticle(comment);
+    await expect(authApp.commentByText(comment)).toBeVisible();
   });
 
   test("Пользователь может отредактировать статью", async ({ authApp }) => {
-    const article = ArticleBuilder.random().build();
+    const article = new ArticleBuilder()
+      .withTitle(faker.lorem.sentence())
+      .withDescription(faker.lorem.paragraph())
+      .withBody(faker.lorem.paragraphs(2))
+      .withTags([faker.lorem.word()])
+      .build();
 
     await authApp.createArticle(
       article.title,
@@ -64,14 +85,14 @@ test.describe("UI: статьи", () => {
       article.tags,
     );
 
-    await authApp.expectArticleTitleVisible(article.title);
+    await expect(authApp.page.getByText(article.title)).toBeVisible();
 
     await authApp.editArticle();
 
     const updatedArticle = new ArticleBuilder()
       .withTitle(article.title)
-      .withRandomDescription()
-      .withRandomBody()
+      .withDescription(faker.lorem.paragraph())
+      .withBody(faker.lorem.paragraphs(2))
       .withTags(article.tags)
       .build();
 
@@ -82,13 +103,18 @@ test.describe("UI: статьи", () => {
       updatedArticle.tags,
     );
 
-    await authApp.expectArticleBodyVisible(updatedArticle.body);
+    await expect(authApp.page.getByText(updatedArticle.body)).toBeVisible();
   });
 
   test("Пользователь может добавить статью в Favorited Articles", async ({
     authApp,
   }) => {
-    const article = ArticleBuilder.random().build();
+    const article = new ArticleBuilder()
+      .withTitle(faker.lorem.sentence())
+      .withDescription(faker.lorem.paragraph())
+      .withBody(faker.lorem.paragraphs(2))
+      .withTags([faker.lorem.word()])
+      .build();
 
     await authApp.createArticle(
       article.title,
@@ -103,10 +129,10 @@ test.describe("UI: статьи", () => {
     await authApp.favoriteArticle();
 
     await authApp.page.goto(
-      `${process.env.UI_BASE_URL || "https://realworld.qa.guru/#/"}/profile/Fusion/favorites`,
+      `https://realworld.qa.guru/#/profile/Fusion/favorites`,
     );
     await authApp.gotoFavoritedArticles();
 
-    await authApp.expectArticleTitleVisible(article.title);
+    await expect(authApp.page.getByText(article.title)).toBeVisible();
   });
 });

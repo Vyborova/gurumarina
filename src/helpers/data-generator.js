@@ -2,11 +2,10 @@ import { faker } from "@faker-js/faker";
 
 export class DataGenerator {
   static generateUser() {
-    const user = {
-      email: process.env.API_EMAIL,
-      password: process.env.API_PASSWORD,
+    return {
+      email: "vyborova.ma@yandex.ru",
+      password: "Vybor2026",
     };
-    return user;
   }
 
   static generateAirportNote() {
