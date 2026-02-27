@@ -1,5 +1,6 @@
 import { test, expect } from "../src/fixture/api.fixture.js";
 import { DataGenerator } from "../src/helpers/data-generator.js";
+import { AirportBuilder } from "../src/builders/airport.builder.js";
 
 test.describe("API: Airport Gap", () => {
   test("Получить токен авторизации", async ({ api }) => {
@@ -33,10 +34,12 @@ test.describe("API: Airport Gap", () => {
   });
 
   test("Добавить аэропорт в избранное", async ({ api }) => {
-    const favorite = await api.addRandomFavoriteAirport();
+    await api.clearFavorites();
+    const favorite = AirportBuilder.random().build();
+    const result = await api.addToFavorites(favorite.airportId, favorite.note);
 
-    expect(favorite).toHaveProperty("data");
-    expect(favorite.data).toHaveProperty("attributes");
-    expect(favorite.data.attributes).toHaveProperty("airport_id");
+    expect(result).toHaveProperty("data");
+    expect(result.data).toHaveProperty("attributes");
+    expect(result.data.attributes).toHaveProperty("airport");
   });
 });

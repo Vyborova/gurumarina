@@ -1,36 +1,20 @@
 import { AirportService } from "./airport.service.js";
-import { DataGenerator } from "../helpers/data-generator.js";
 
 export class AirportFacade {
-  constructor(request, baseURL) {
+  constructor(request, baseURL, email, password) {
     this.service = new AirportService(request, baseURL);
-    this.generator = DataGenerator;
+    this.email = email;
+    this.password = password;
   }
 
-  async addRandomFavoriteAirport() {
-    console.log("Добавляем аэропорт в избранное...");
-
+  async addToFavorites(airportId, note) {
     const { token } = await this.getAuthenticatedUser();
-    console.log("Токен получен:", token);
-
-    const airportId = this.generator.generateAirportId();
-    const note = this.generator.generateAirportNote();
-    console.log("Airport ID:", airportId, "Note:", note);
-
-    const result = await this.service.addToFavorites(token, airportId, note);
-    console.log("Результат:", result);
-
-    return result;
+    return await this.service.addToFavorites(token, airportId, note);
   }
 
   async getAuthenticatedUser() {
-    const user = this.generator.generateUser();
-    console.log("Пользователь:", user);
-
-    const token = await this.service.getAuthToken(user.email, user.password);
-    console.log("Токен:", token);
-
-    return { user, token };
+    const token = await this.service.getAuthToken(this.email, this.password);
+    return { token };
   }
 
   async getAirportById(airportId) {
@@ -43,5 +27,13 @@ export class AirportFacade {
 
   async getAllAirports() {
     return await this.service.getAirports();
+  }
+
+  async clearFavorites() {
+    const { token } = await this.getAuthenticatedUser();
+    const favorites = await this.service.getFavorites(token);
+    for (const item of favorites.data ?? []) {
+      await this.service.deleteFavorite(token, item.id);
+    }
   }
 }

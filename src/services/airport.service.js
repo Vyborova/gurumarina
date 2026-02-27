@@ -53,4 +53,10 @@ export class AirportService {
     });
     return response.json();
   }
+
+  async deleteFavorite(token, id) {
+    await this.request.delete(`${this.baseUrl}/favorites/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
 }
