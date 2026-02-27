@@ -2,168 +2,148 @@
 
 ## Описание проекта
 
-Данный репозиторий содержит автоматизированные тесты для двух типов приложений:
+Репозиторий содержит автоматизированные тесты для двух приложений:
 
 - **UI:** RealWorld QA Guru — веб-платформа для создания и управления статьями с системой авторизации
 - **API:** Airport Gap API — сервис для работы с аэропортами, расчёта расстояний и управления избранными
 
-Цель проекта — реализовать комплексную автоматизацию тестирования пользовательского интерфейса и API с применением современных паттернов проектирования и интеграцией с CI/CD.
-
 ## Технологический стек
 
-- **Язык:** JavaScript (ES6+)
-- **Тестовый фреймворк:** Playwright Test
-- **Паттерны проектирования:** Page Object Model, Builder, Facade, Fixtures
-- **Генерация тестовых данных:** @faker-js/faker
-- **CI/CD:** GitHub Actions, Jenkins
-- **Отчётность:** Allure Report
-- **Пакетный менеджер:** npm
+| Инструмент | Назначение |
+|---|---|
+| JavaScript (ES6+) | Язык разработки |
+| Playwright Test | Тестовый фреймворк |
+| @faker-js/faker | Генерация тестовых данных |
+| dotenv | Управление переменными окружения |
+| Allure Report | Отчётность |
+| GitHub Actions | CI/CD |
+
+**Паттерны проектирования:** Page Object Model, Facade, Builder, Fixtures
+
+## Структура проекта
+
+```
+├── src/
+│   ├── builders/
+│   │   ├── airport.builder.js   # Билдер тестовых данных аэропорта
+│   │   ├── article.builder.js   # Билдер статей
+│   │   └── user.builder.js      # Билдер пользователей
+│   ├── fixture/
+│   │   ├── api.fixture.js       # Фикстура для API тестов
+│   │   └── ui.fixture.js        # Фикстура для UI тестов
+│   ├── helpers/
+│   │   └── data-generator.js    # Генератор тестовых данных
+│   ├── pages/                   # Page Object классы (UI)
+│   └── services/
+│       ├── airport.facade.js    # Фасад для Airport Gap API
+│       └── airport.service.js   # Сервис запросов Airport Gap API
+├── tests/
+│   ├── airport-api.spec.js      # API тесты
+│   └── ui.spec.js               # UI тесты
+├── playwright.config.js
+└── .env                         # Переменные окружения (не в репозитории)
+```
 
 ## Тестируемые приложения
 
 ### UI — RealWorld QA Guru
 
-- **URL:** https://realworld.qa.guru/#/
+**URL:** https://realworld.qa.guru/#/
 
-**Реализованные сценарии:**
-
-- Авторизация пользователя
-- Создание новой статьи
-- Редактирование статьи
-- Добавление комментариев
-- Добавление статьи в избранное
-- Проверка отображения статьи в Global Feed
+| Сценарий |
+|---|
+| Авторизация пользователя |
+| Создание новой статьи |
+| Редактирование статьи |
+| Добавление комментариев |
+| Добавление статьи в избранное |
+| Проверка отображения статьи в Global Feed |
 
 ### API — Airport Gap
 
-- **URL:** https://airportgap.com/api
+**URL:** https://airportgap.com/api
 
-**Реализованные сценарии:**
+| Сценарий |
+|---|
+| Получение токена авторизации |
+| Получение списка аэропортов |
+| Получение аэропорта по ID |
+| Расчёт расстояния между аэропортами |
+| Добавление аэропорта в избранное |
 
-- Получение токена авторизации
-- Получение списка аэропортов
-- Получение аэропорта по ID
-- Расчёт расстояния между аэропортами
-- Добавление аэропорта в избранное
+**Всего:** 5 UI + 5 API = 10 автоматизированных тестов
 
-## Количество тестов
+## Установка и запуск
 
-- **UI тесты:** 5
-- **API тесты:** 5
-- **Всего:** 10 автоматизированных тестов
+### Требования
 
-## CI/CD и отчётность
+- Node.js 18+
+- npm 8+
+
+### Установка
+
+```bash
+git clone https://github.com/Vyborova/diplomguru.git
+cd diplomguru
+npm install
+npx playwright install
+```
+
+### Переменные окружения
+
+Создайте файл `.env` в корне проекта:
+
+```
+UI_BASE_URL=https://realworld.qa.guru/#/
+API_BASE_URL=https://airportgap.com/api
+```
+
+### Запуск тестов
+
+```bash
+# Все тесты
+npm test
+
+# Только UI тесты
+npx playwright test ui.spec.js
+
+# Только API тесты
+npx playwright test airport-api.spec.js
+
+# Интерактивный режим (Playwright UI)
+npm run ui
+```
+
+### Отчёты
+
+```bash
+# HTML отчёт Playwright
+npm run report
+
+# Генерация Allure отчёта
+npm run allure:generate
+
+# Просмотр Allure отчёта
+npm run allure:open
+
+# Allure сервер (генерация + открытие)
+npm run allure:serve
+```
+
+## CI/CD
 
 ### GitHub Actions
 
-Автоматический запуск тестов при:
+Автоматический запуск тестов при `push` и `pull request`. Workflow включает:
 
-- push
-- pull request
-
-**Workflow включает:**
-
-- установку зависимостей
-- установку браузеров Playwright
+- установку зависимостей и браузеров Playwright
 - запуск UI и API тестов
 - сохранение артефактов (отчёты, скриншоты, trace)
 
 ### Jenkins
 
-Дополнительная CI-платформа используется для:
+- Запуск автотестов
+- Публикация Allure Report
+- Отправка уведомлений в Telegram
 
-- запуска автотестов
-- публикации Allure Report
-- отправки уведомлений в Telegram
-
-### Allure Report
-
-Настроена интеграция Allure для формирования отчётов.
-
-- **Скриншоты:** screenshot: "only-on-failure"
-- **Trace:** trace: "on-first-retry"
-- **Генерация отчёта:** npm run allure:generate
-- **Просмотр отчёта:** npm run allure:open
-- \*\*В Jenkins отчёт публикуется автоматически после выполнения тестов
-
-### Уведомления в Telegram
-
-После каждого запуска тестов бот отправляет уведомление о результате выполнения (SUCCESS / FAILED).
-
-**Для работы необходимо настроить:**
-
-- TELEGRAM_BOT_TOKEN
-- TELEGRAM_CHAT_ID
-
-## Запуск тестов
-
-### Установка проекта
-
-```bash
-# Клонирование репозитория
-git clone https://github.com/Vyborova/diplomguru.git
-cd diplomguru
-
-# Установка зависимостей
-npm install
-
-# Установка браузеров
-npx playwright install
-
-Запуск тестов
-Установка проекта
-
-# Клонирование репозитория
-
-git clone https://github.com/Vyborova/diplomguru.git
-cd diplomguru
-
-# Установка зависимостей
-
-npm install
-
-# Установка браузеров
-
-npx playwright install
-
-Запуск тестов
-
-# Все тесты
-
-npm test
-
-# Режим UI (Playwright UI)
-
-npm run ui
-
-# Только UI тесты
-
-npx playwright test ui.spec.js
-
-# Только API тесты
-
-npx playwright test airport-api.spec.js
-
-Отчёты
-
-# HTML отчет Playwright
-
-npm run report
-
-# Allure отчет
-
-npm run allure:generate
-npm run allure:open
-
-# Запуск Allure сервера
-
-npm run allure:serve
-
-Ручные тесты
-Для дипломной работы реализованы 5 ручных тестовых сценариев с детальным описанием шагов и ожидаемых результатов (см. manual-tests.md).
-
-Требования к окружению
-• Node.js версии 18+
-• npm версии 8+
-• Git
-```
+**Для работы уведомлений необходимо настроить:** `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`
