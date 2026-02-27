@@ -2,8 +2,8 @@ import { test as base } from "@playwright/test";
 import { AirportFacade } from "../services/airport.facade.js";
 
 export const test = base.extend({
-  api: async ({ request }, use) => {
-    const apiFacade = new AirportFacade(request);
+  api: async ({ request, baseURL }, use) => {
+    const apiFacade = new AirportFacade(request, baseURL);
     await use(apiFacade);
   },
 });

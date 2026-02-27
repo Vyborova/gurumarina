@@ -1,7 +1,7 @@
 export class AirportService {
-  constructor(request) {
+  constructor(request, baseURL) {
     this.request = request;
-    this.baseUrl = "https://airportgap.com/api";
+    this.baseUrl = baseURL;
   }
 
   async getAuthToken(email, password) {

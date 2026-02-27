@@ -2,8 +2,8 @@ import { AirportService } from "./airport.service.js";
 import { DataGenerator } from "../helpers/data-generator.js";
 
 export class AirportFacade {
-  constructor(request) {
-    this.service = new AirportService(request);
+  constructor(request, baseURL) {
+    this.service = new AirportService(request, baseURL);
     this.generator = DataGenerator;
   }
 
