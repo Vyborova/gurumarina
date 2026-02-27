@@ -35,11 +35,8 @@ test.describe("API: Airport Gap", () => {
   test("Добавить аэропорт в избранное", async ({ api }) => {
     const favorite = await api.addRandomFavoriteAirport();
 
-    if (favorite && favorite.data) {
-      expect(favorite.data).toHaveProperty("attributes");
-      expect(favorite.data.attributes).toHaveProperty("airport_id");
-    } else {
-      expect(favorite).toBeNull();
-    }
+    expect(favorite).toHaveProperty("data");
+    expect(favorite.data).toHaveProperty("attributes");
+    expect(favorite.data.attributes).toHaveProperty("airport_id");
   });
 });

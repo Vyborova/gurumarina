@@ -20,11 +20,6 @@ export class AirportFacade {
     const result = await this.service.addToFavorites(token, airportId, note);
     console.log("Результат:", result);
 
-    if (result.errors && result.errors[0]?.status === "422") {
-      console.log("Аэропорт уже в избранном - это нормально");
-      return null;
-    }
-
     return result;
   }
 
