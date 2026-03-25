@@ -47,9 +47,9 @@ export class UserBuilder {
   // Генерация реального пользователя для тестов
   static real() {
     return new UserBuilder()
-      .withEmail("test-20251@mail.ru")
-      .withPassword("Vybor2025")
-      .withName("Fusion");
+      .withEmail(process.env.UI_EMAIL)
+      .withPassword(process.env.UI_PASSWORD)
+      .withName(process.env.UI_USERNAME);
   }
 
   build() {

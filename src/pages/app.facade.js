@@ -55,7 +55,8 @@ export class AppFacade {
     await this.mainPage.openGlobalFeed();
   }
 
-  async gotoFavoritedArticles() {
+  async openFavoritedArticles() {
+    await this.page.goto(`/#/profile/${process.env.UI_USERNAME}/favorites`);
     await this.profilePage.gotoFavoritedArticles();
   }
 

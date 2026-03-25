@@ -3,8 +3,8 @@ import { faker } from "@faker-js/faker";
 export class DataGenerator {
   static generateUser() {
     return {
-      email: "vyborova.ma@yandex.ru",
-      password: "Vybor2026",
+      email: process.env.API_EMAIL,
+      password: process.env.API_PASSWORD,
     };
   }
 

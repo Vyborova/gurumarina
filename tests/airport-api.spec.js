@@ -5,7 +5,8 @@ import { AirportBuilder } from "../src/builders/airport.builder.js";
 test.describe("API: Airport Gap", () => {
   test("Получить токен авторизации", async ({ api }) => {
     const { token } = await api.getAuthenticatedUser();
-    expect(token).toBe("kNwDUV8DK9SF1ZhGx9NjKSSx");
+    expect(token).toBeTruthy();
+    expect(typeof token).toBe("string");
   });
 
   test("Получить список аэропортов", async ({ api }) => {

@@ -128,10 +128,7 @@ test.describe("UI: статьи", () => {
     });
     await authApp.favoriteArticle();
 
-    await authApp.page.goto(
-      `https://realworld.qa.guru/#/profile/Fusion/favorites`,
-    );
-    await authApp.gotoFavoritedArticles();
+    await authApp.openFavoritedArticles();
 
     await expect(authApp.page.getByText(article.title)).toBeVisible();
   });
